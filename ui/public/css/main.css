@@ -1,0 +1,11 @@
+* {
+    font-family: monospace;
+}
+
+table {
+    font-size: 30px;
+}
+
+table, th, td {
+    border: 1px solid;
+}

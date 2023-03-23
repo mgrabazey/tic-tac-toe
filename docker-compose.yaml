@@ -1,0 +1,44 @@
+version: '3.9'
+
+services:
+  ui:
+    image: nginx
+    restart: always
+    volumes:
+      - ./ui/public:/usr/share/nginx/html:ro
+    ports:
+      - 8081:80
+    networks:
+      - tictactoe
+
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-tictactoe}
+    ports:
+      - 5432:5432
+    networks:
+      - tictactoe
+
+  app:
+    build: .
+    restart: always
+    environment:
+      PUBLIC_URL: ${API_PUBLIC_URL:-http://127.0.0.1:8080}
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: ${POSTGRES_USER:-postgres}
+      DB_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      DB_NAME: ${POSTGRES_DB:-tictactoe}
+    ports:
+      - 8080:80
+    networks:
+      - tictactoe
+    depends_on:
+      - db
+
+networks:
+  tictactoe:
